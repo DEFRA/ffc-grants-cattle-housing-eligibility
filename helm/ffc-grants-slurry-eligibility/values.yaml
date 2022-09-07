@@ -1,0 +1,73 @@
+environment: development
+name: ffc-grants-slurry-eligibility
+namespace: ffc-grants
+workstream: ffc-grants
+image: ffc-grants-slurry-eligibility
+
+labels: {}
+
+appInsights:
+  key: not-a-real-key
+
+azureIdentity:
+  clientID: not-a-real-clientID
+  resourceID: not-a-real-resourceID
+
+containerConfigMap:
+  name: ffc-grants-slurry-eligibility-config-map
+
+containerSecret:
+  name: ffc-grants-slurry-eligibility-container-secret
+  type: Opaque
+
+deployment:
+  restartPolicy: Always
+  priorityClassName: default
+  minReadySeconds: 0
+  redeployOnChange: update this field to force a change
+  replicas: 2
+  minReplicas: 2
+  maxReplicas: 3
+  cpuThreshold: 80
+  memoryThreshold: 80
+
+container:
+  imagePullPolicy: IfNotPresent
+  requestMemory: 120Mi
+  requestCpu: 120m
+  limitMemory: 120Mi
+  limitCpu: 120m
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  port: 3000
+  messageQueueHost: dummy
+  contactDetailsQueueAddress: contact-details
+  desirabilityScoreSubscriptionAddress: desirability-score-subscription
+  desirabilityScoreTopicAddress: desirability-score-topic
+  desirabilitySubmittedTopicAddress: desirability-submitted
+  redisHostname: redis
+  redisPassword: redis
+  redisPort: 6379
+  redisPartition: ffc-grants-slurry-eligibility
+  notifyEmailTemplate: dummy-template
+  worksheetProtectPassword: dummy-pwd
+  worksheetProtectEnabled: false
+  sendEmailToRpa: false
+  rpaEmail: FTF@rpa.gov.uk
+  worksheetHideEmptyRows: false
+  protectiveMonitoringUrl:
+  excelUploadEnvironment: dummy
+
+livenessProbe:
+  path: /healthz
+  port: 3000
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  path: /healthy
+  port: 3000
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  failureThreshold: 3
